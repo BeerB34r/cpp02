@@ -73,7 +73,90 @@ int	Fixed::toInt() const {
 	return this->rawBits >> fractionalBits;
 }
 
+Fixed&	Fixed::operator++() {
+	this->rawBits++;
+	return *this;
+}
+
+Fixed	Fixed::operator++(int) {
+	Fixed	old = *this;
+	operator++();
+	return old;
+}
+
+Fixed&	Fixed::operator--() {
+	this->rawBits--;
+	return *this;
+}
+
+Fixed	Fixed::operator--(int) {
+	Fixed old = *this;
+	operator--();
+	return old;
+}
+
 std::ostream& operator <<(std::ostream& out, const Fixed& fixed) {
 	out << fixed.toFloat();
 	return out;
+}
+
+bool operator <(const Fixed& a, const Fixed& b) {
+	return a.getRawBits() < b.getRawBits();
+}
+
+bool operator >(const Fixed& a, const Fixed& b) {
+	return a.getRawBits() > b.getRawBits();
+}
+
+bool operator >=(const Fixed& a, const Fixed& b) {
+	return !(a < b);
+}
+
+bool operator <=(const Fixed& a, const Fixed& b) {
+	return !(a > b);
+}
+
+bool operator ==(const Fixed& a, const Fixed& b) {
+	return a.getRawBits() == b.getRawBits();
+}
+
+bool operator !=(const Fixed& a, const Fixed& b) {
+	return !(a == b);
+}
+
+Fixed operator +(const Fixed& a, const Fixed& b) {
+	Fixed out;
+	out.setRawBits( a.getRawBits() + b.getRawBits());
+	return out;
+}
+
+Fixed operator -(const Fixed& a, const Fixed& b) {
+	Fixed out;
+	out.setRawBits( a.getRawBits() - b.getRawBits());
+	return out;
+}
+
+Fixed operator *(const Fixed& a, const Fixed& b) {
+	return Fixed(a.toFloat() * b.toFloat());
+}
+
+Fixed operator /(const Fixed& a, const Fixed& b) {
+	if (b == 0) throw std::domain_error("cannot divide by zero");
+	return Fixed(a.toFloat() / b.toFloat());
+}
+
+Fixed&	Fixed::min(Fixed& a, Fixed& b) {
+	return a < b ? a : b;
+}
+
+const Fixed&	Fixed::min(const Fixed& a, const Fixed& b) {
+	return a < b ? a : b;
+}
+
+Fixed&	Fixed::max(Fixed& a, Fixed& b) {
+	return a > b ? a : b;
+}
+
+const Fixed&	Fixed::max(const Fixed& a, const Fixed& b) {
+	return a > b ? a : b;
 }
